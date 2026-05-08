@@ -5,7 +5,7 @@ Vision Language Models"**.
 
 The release ships two artifacts:
 
-- **MedGround-Bench** — a causally validated CXR-VQA evaluation set
+- **MedGround-Bench** — a causally validated CXR-VQA attribution evaluation set
   (1,880 direct + 2,060 reasoning samples across 6 LVLMs and 3 source datasets).
 - **MedFocus** — a concept-based causal attribution method that beats 10 baselines
   on the benchmark.
