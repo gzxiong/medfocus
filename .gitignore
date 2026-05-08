@@ -1,0 +1,29 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local artifacts that aren't part of the release
+predictions/
+preprocess/
+attributions/
+results/
+logs/
+figs/
+data/generated_images/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
