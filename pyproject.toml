@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "medfocus"
 version = "0.1.0"
-description = "Concept-based causal attribution for chest X-ray reasoning in LVLMs (NeurIPS 2026)."
+description = "Concept-based causal attribution for chest X-ray reasoning in LVLMs."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
