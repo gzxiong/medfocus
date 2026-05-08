@@ -110,5 +110,4 @@ benchmark/       MedGround-Bench construction (RadEdit + 3-step filter).
 scripts/         CLIs that drive the benchmark build, attribution, evaluation.
 notebooks/       Demo + qualitative-figure regeneration.
 data/            Released benchmark JSON and reference-CXR pool stubs.
-tests/           CPU-only unit tests (pytest or `python tests/_manual_runner.py`).
 ```

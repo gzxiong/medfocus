@@ -36,7 +36,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.5", "jupyter", "ipykernel"]
+dev = ["ruff>=0.5", "jupyter", "ipykernel"]
 
 [project.scripts]
 medfocus-attribute = "medfocus.cli.run_attribution:main"

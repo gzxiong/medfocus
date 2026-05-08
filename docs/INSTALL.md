@@ -14,15 +14,6 @@ cd medfocus
 pip install -e .
 ```
 
-To run the tests:
-
-```bash
-pip install -e ".[dev]"
-pytest tests/
-# or, in environments without pytest:
-python tests/_manual_runner.py
-```
-
 ## GPU memory
 
 | Pipeline stage          | 1× GPU mem | Notes                                      |
