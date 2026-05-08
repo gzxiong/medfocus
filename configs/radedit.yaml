@@ -1,0 +1,15 @@
+# RadEdit (Perez-Garcia et al., 2024) inpainting configuration for the
+# foreground / background counterfactual stages of the 3-step causal filter.
+
+radedit:
+  model_id: microsoft/radedit
+  num_inference_steps: 200
+  guidance_scale: 7.5
+  skip_ratio: 0.3
+  scheduler: ddim
+
+# Text prompt used when removing the queried attribute from the image.
+prompts:
+  foreground: "No {attribute}"     # e.g. "No cardiomegaly"
+  background_attribute: "No {attribute}"  # background mask, same prompt
+  background_normal: "No abnormality"     # alternate background prompt

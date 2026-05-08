@@ -1,0 +1,11 @@
+# 16 normal ImaGenome CXRs whose annotations cover the full 11-concept vocabulary.
+# Concrete IDs are filled in by scripts/extract_reference_pool.py against the
+# ImaGenome gold-standard table; the pool ships with images and per-concept
+# masks under data/reference_cxrs/.
+
+images_dir: data/reference_cxrs/images
+masks_dir: data/reference_cxrs/concept_masks
+
+# Concrete ImaGenome (patient_id, study_id, image_id) tuples are written here
+# at extraction time; defaults to all images present under images_dir.
+candidates: []

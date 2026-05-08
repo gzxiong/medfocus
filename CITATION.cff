@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the accompanying paper."
+title: "MedFocus: Concept-based Causal Attribution for Chest X-ray Reasoning in LVLMs"
+version: 0.1.0
+date-released: 2026-05-08
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "Rethinking Visual Attribution for Chest X-ray Reasoning in Large Vision Language Models"
+  conference:
+    name: "Conference on Neural Information Processing Systems (NeurIPS)"
+  year: 2026

@@ -1,0 +1,26 @@
+# Set MEDFOCUS_DATA_ROOT to the root containing physionet.org/ and PadChest_GR/.
+# All dataset paths below are resolved relative to it.
+data_root: ${MEDFOCUS_DATA_ROOT}
+
+datasets:
+  imagenome:
+    annotations: chest-imagenome/1.0.0/gold_dataset/gold_object_attribute_with_coordinates.txt
+    images_glob: mimic-cxr-jpg/2.1.0/files/p{p2}/p{patient_id}/s{study_id}/{image_id}
+  vindr_cxr:
+    annotations: vindr-cxr/1.0.0/annotations/annotations_test.csv
+    images_dir: vindr-cxr/1.0.0/test
+  padchest_gr:
+    studies_json: filtered_studies.json
+    images_dir: PadChest_GR
+  medground_bench:
+    direct_json: data/medground_bench/direct.json
+    reasoning_json: data/medground_bench/reasoning.json
+
+image:
+  resize_width: 224
+
+# Suffixes appended to every binary VQA question to control the LVLM output mode.
+question_suffixes:
+  open: " Answer with a letter, word, phrase, or sentence."
+  direct: " Answer directly with yes or no without any explanation."
+  cot: " Think step by step and answer with yes or no."

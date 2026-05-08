@@ -1,0 +1,46 @@
+# MedFocus hyperparameters. Defaults match the paper.
+
+ot:
+  epsilon: 0.05            # entropic regularization for Sinkhorn
+  lambda_marginal: 0.1     # marginal relaxation (= lambda_1 = lambda_2 in Eq. 1)
+  selection_grid: 14       # downsample grid for the 16-candidate reference selection
+  transfer_grid: 56        # downsample grid for per-concept mass transfer
+  sinkhorn_max_iter: 500
+  sinkhorn_tol: 1.0e-6
+  mass_quantile: 0.75      # per-concept transferred-mass fraction kept (dense core)
+
+medsam:
+  model_id: flaviagiammarino/medsam-vit-base
+
+intervention:
+  baseline: zero           # how the bbox region is replaced ("zero" or "mean")
+  tau: 0.75                # whole-image fallback when min_c r_c >= tau
+
+# 11 ImaGenome anatomical concepts used as the attribution vocabulary.
+concepts:
+  - cardiac silhouette
+  - left lung
+  - right lung
+  - mediastinum
+  - upper mediastinum
+  - left clavicle
+  - right clavicle
+  - left hilar structures
+  - right hilar structures
+  - left costophrenic angle
+  - right costophrenic angle
+
+# Clinically meaningful unions, evaluated alongside individual concepts.
+composites:
+  bilateral_lungs:
+    - left lung
+    - right lung
+  bilateral_clavicles:
+    - left clavicle
+    - right clavicle
+  bilateral_hilar:
+    - left hilar structures
+    - right hilar structures
+  bilateral_costophrenic:
+    - left costophrenic angle
+    - right costophrenic angle
