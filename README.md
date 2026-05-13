@@ -13,7 +13,7 @@ The release ships two artifacts:
 ## Install
 
 ```bash
-git clone <repo> medfocus && cd medfocus
+git clone https://github.com/gzxiong/medfocus.git && cd medfocus
 pip install -e .
 export MEDFOCUS_DATA_ROOT=/path/to/cxr/datasets
 ```
@@ -21,7 +21,7 @@ export MEDFOCUS_DATA_ROOT=/path/to/cxr/datasets
 The CXR datasets are not redistributed. Download
 [ImaGenome](https://physionet.org/content/chest-imagenome/) and
 [VinDR-CXR](https://physionet.org/content/vindr-cxr/1.0.0/) from PhysioNet
-(credentialing required), and PadChest-GR from Kaggle, then place them under
+(credentialing required), and PadChest-GR from [Kaggle](https://www.kaggle.com/datasets/fatihasubha/padchest-full), then place them under
 `$MEDFOCUS_DATA_ROOT` following the layout in `configs/datasets.yaml`.
 
 ## Quick start
