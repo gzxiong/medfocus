@@ -98,19 +98,13 @@ python scripts/build_medground_bench.py --predictions-root predictions \
     --out-dir data/medground_bench
 ```
 
-## Repository layout
-
+## Citation
+If you use `MedFocus` or `MedGround-Bench`, please consider citing
 ```
-configs/         YAMLs: models, datasets, medfocus, radedit, reference_pool.
-medfocus/        Importable package.
-  attribution/   MedFocus orchestrator + 10 baselines + IoU/F1 evaluation.
-  concepts/      UOT-based concept transfer + intervention scorer.
-  data/          Image I/O + dataset loaders.
-  lvlm/          Adapters for Qwen-VL and Gemma image-text formats.
-  medsam/        MedSAM HF wrapper for box-prompt mask refinement.
-  ot/            Sinkhorn UOT + reference-image pool.
-benchmark/       MedGround-Bench construction (RadEdit + 3-step filter).
-scripts/         CLIs for benchmark build, attribution, evaluation.
-notebooks/       Demo + qualitative-figure regeneration.
-data/            Released benchmark JSON and reference-CXR pool stubs.
+@article{xiong2026rethinking,
+    title={Rethinking Visual Attribution for Chest X-ray Reasoning in Large Vision Language Models}, 
+    author={Guangzhi Xiong and Qiao Jin and Sanchit Sinha and Zhiyong Lu and Aidong Zhang},
+    journal={arXiv preprint arXiv:2605.20158},
+    year={2026}
+}
 ```
