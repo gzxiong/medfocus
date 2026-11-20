@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedFocus: Rethinking Visual Attribution for Chest X-ray Reasoning in LVLMs (NeurIPS 2026)</title>
+  <meta name="description" content="MedGround-Bench causally verifies the visual evidence behind medical LVLM predictions on chest X-rays; MedFocus attributes predictions to named anatomical regions through targeted interventions. NeurIPS 2026.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Rethinking Visual Attribution for Chest X-ray Reasoning in Large Vision Language Models">
+  <meta property="og:description" content="MedGround-Bench and MedFocus: causally verified evaluation and concept-based causal attribution for medical LVLMs. NeurIPS 2026.">
+  <meta property="og:url" content="https://gzxiong.github.io/medfocus/">
+  <meta property="og:image" content="https://gzxiong.github.io/medfocus/static/images/method_comparison.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231d5fd3'/><text x='50' y='67' font-size='46' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>MF</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="static/css/style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="static/js/main.js"></script>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="inner">
+    <a class="brand" href="#top">MedFocus</a>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#bibtex">BibTeX</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="venue">NeurIPS 2026 &nbsp;&middot;&nbsp; MedFocus &amp; MedGround-Bench</div>
+    <h1>Rethinking Visual Attribution for Chest <span class="nobr">X-ray</span> Reasoning in Large Vision Language Models</h1>
+    <div class="authors">
+      <span class="author"><a href="https://gzxiong.github.io/">Guangzhi Xiong</a><sup>1</sup></span>&ensp;
+      <span class="author"><a href="https://qiaojin.info/">Qiao Jin</a><sup>2</sup></span>&ensp;
+      <span class="author"><a href="https://sanchitsinha.com/">Sanchit Sinha</a><sup>1</sup></span>&ensp;
+      <span class="author"><a href="https://www.ncbi.nlm.nih.gov/research/bionlp/Zhiyong-Lu">Zhiyong Lu</a><sup>2</sup></span>&ensp;
+      <span class="author"><a href="https://www.cs.virginia.edu/~az9eg/website/home.html">Aidong Zhang</a><sup>1</sup></span>
+    </div>
+    <div class="affils"><sup>1</sup>University of Virginia &emsp; <sup>2</sup>National Institutes of Health</div>
+    <div class="buttons">
+      <a class="btn" href="https://arxiv.org/abs/2605.20158"><i class="fa-regular fa-file-lines"></i> Paper</a>
+      <a class="btn" href="https://arxiv.org/pdf/2605.20158"><i class="fa-solid fa-download"></i> PDF</a>
+      <a class="btn" href="https://github.com/gzxiong/medfocus"><i class="fa-brands fa-github"></i> Code</a>
+      <a class="btn" href="https://github.com/gzxiong/medfocus/tree/main/data/medground_bench"><i class="fa-solid fa-database"></i> Benchmark</a>
+      <a class="btn" href="#bibtex"><i class="fa-solid fa-quote-left"></i> BibTeX</a>
+    </div>
+  </div>
+
+  <figure class="fig teaser">
+    <img src="static/images/method_comparison.jpg" alt="Attribution maps from existing methods and MedFocus on three chest X-ray examples">
+    <figcaption>Attribution maps on three examples whose expert-annotated evidence (red) is verified to drive the model's answer: lobar/segmental collapse (ImaGenome), interstitial lung disease (VinDR-CXR), and cardiomegaly (PadChest-GR). Existing methods (yellow) give diffuse or misplaced regions, while MedFocus localizes the evidence.</figcaption>
+  </figure>
+
+  <section class="block" id="overview">
+    <div class="overview">
+      <div class="label">Overview</div>
+      <div class="ov-title">Do attribution maps show the evidence a medical vision-language model actually used?</div>
+      <p>Saliency and attention maps are widely used to explain large vision-language models (LVLMs) in medicine. Whether they reflect the evidence behind a prediction is rarely checked, because that evidence is normally unknown. <b>MedGround-Bench</b> keeps only chest X-ray questions whose expert-annotated region is confirmed, by counterfactual editing, to drive the model's answer. On these samples, widely used attribution methods often miss the evidence. <b>MedFocus</b> instead attributes a prediction to named anatomical regions by intervening on them, and explains it at the spatial, concept, and token level.</p>
+      <ul>
+        <li><b>3,940</b> causally verified samples across <b>6</b> LVLMs, <b>3</b> chest X-ray datasets, and two output modes (direct answer and step-by-step reasoning).</li>
+        <li><b>11</b> attention-, gradient-, prompting-, and perturbation-based methods often fail to identify the evidence the model used.</li>
+        <li>MedFocus reaches <b>54.3%</b> IoU on ImaGenome versus <b>39.2%</b> for the best baseline, with the best IoU and F1 on all three datasets.</li>
+        <li>It stays faithful under step-by-step reasoning (<b>52.95%</b> IoU on ImaGenome), where many baselines degrade further.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="benchmark">
+    <div class="label">MedGround-Bench</div>
+    <h2>A causal test for attribution faithfulness</h2>
+    <p>A region annotated by an expert is not necessarily the region the model used. MedGround-Bench therefore keeps only samples whose annotated region is verified, through counterfactual editing, to drive the model's prediction.</p>
+    <figure class="fig">
+      <img src="static/images/benchmark.png" alt="Construction of MedGround-Bench from three chest X-ray datasets with causal filtering by counterfactual editing">
+      <figcaption>Construction of MedGround-Bench. Grounded findings from three CXR datasets become binary VQA questions, and a sample is kept only when counterfactual edits confirm that the annotated region drives the model's answer.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><b>Grounded VQA from expert annotations</b>Findings with expert bounding boxes from ImaGenome, VinDR-CXR, and PadChest-GR become questions of the form <i>&ldquo;Is there evidence of [finding] in the image?&rdquo;</i></li>
+      <li><b>Correctness filtering</b>Keep only the questions the target LVLM answers correctly, since evidence for a wrong answer cannot be reliably established.</li>
+      <li><b>Foreground counterfactual</b>RadEdit removes the finding inside the annotated boxes; the sample is kept only if the model flips its answer.</li>
+      <li><b>Background counterfactual</b>Editing everything outside the boxes must leave the answer unchanged, which rules out models that react to any image modification.</li>
+    </ol>
+    <p>The result is <b>1,880</b> direct-answer and <b>2,060</b> reasoning samples for six open LVLMs: Qwen2.5-VL-3B/7B, Gemma3-4B/12B, MedGemma-4B, and MedGemma1.5-4B. Attributions are scored against the verified boxes with IoU, F1, precision, and recall.</p>
+  </section>
+
+  <section class="block" id="method">
+    <div class="label">Method</div>
+    <h2>Concept-based causal attribution</h2>
+    <p>Instead of reading pixels or model internals, MedFocus asks a causal question about clinically named regions: if this piece of anatomy were removed, would the model still produce the same output?</p>
+    <figure class="fig">
+      <img src="static/images/method.png" alt="MedFocus pipeline: concept segmentation with unbalanced optimal transport and MedSAM, followed by causal attribution through perturbation">
+      <figcaption>The MedFocus pipeline. Anatomical concepts are segmented and then perturbed one at a time; words most affected by a perturbation are highlighted in red.</figcaption>
+    </figure>
+    <p>For each concept \(c\), MedFocus masks the concept and measures how much the model's confidence in its original output drops, using a single forward pass:</p>
+    <div class="eqbox">
+      <div class="eqrow">
+        <div class="term t0"><div class="m">\(\Delta_c\)</div><div class="lab">causal effect<br>of concept \(c\)</div></div>
+        <div class="op">\(=\;\sum_{t=1}^{T} \max\Big(0,\)</div>
+        <div class="term t1"><div class="m">\(\log p(y_t \mid \mathbf{x}, q, \mathbf{y}_{&lt;t})\)</div><div class="lab">original image</div></div>
+        <div class="op">\(-\)</div>
+        <div class="term t2"><div class="m">\(\log p(y_t \mid \tilde{\mathbf{x}}_c, q, \mathbf{y}_{&lt;t})\)</div><div class="lab">concept \(c\) masked out</div></div>
+        <div class="op">\(\Big)\)</div>
+      </div>
+      <div class="legend">\(\mathbf{y}\): the model's original output &nbsp;&middot;&nbsp; \(\tilde{\mathbf{x}}_c\): image with the bounding box of concept \(c\) zero-masked</div>
+    </div>
+
+    <h3>MedFocus: segment anatomy, then intervene on it</h3>
+    <div class="cards">
+      <div class="card">
+        <span class="pill">Concept segmentation</span>
+        <ul>
+          <li>Map 11 anatomical concepts (lungs, cardiac silhouette, mediastinum, &hellip;) from a reference normal CXR to the target image with unbalanced optimal transport.</li>
+          <li>Unbalanced transport tolerates pathology-driven changes in tissue mass.</li>
+          <li>Refine each transferred region with MedSAM.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="pill">Causal attribution</span>
+        <ul>
+          <li>Zero-mask the bounding box of each concept, and of clinical groups such as both lungs.</li>
+          <li>The concept with the largest \(\Delta_c\) explains the prediction: a box, a concept name, and per-token effects for reasoning outputs.</li>
+          <li>If no concept matters (\(\min_c e^{-\Delta_c} \ge 0.75\)), fall back to the whole image.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="results">
+    <div class="label">Results</div>
+    <h2>MedFocus finds the evidence others miss</h2>
+    <p>Results on MedGround-Bench-Direct, averaged over the six LVLMs. Saliency maps from the baselines are converted to boxes with a single fixed threshold.</p>
+    <p class="tcap"><b>Attribution faithfulness on MedGround-Bench-Direct.</b> All scores in %.</p>
+    <div class="toolbar">
+      <div class="seg" data-toggle="mf-main">
+        <button class="is-active" data-compact="1">IoU &amp; F1</button>
+        <button data-compact="0">All metrics</button>
+      </div>
+    </div>
+      <div id="mf-main" class="togglable compact">
+<div class="table-wrap togglable-inner"><table class="res">
+<thead>
+<tr class="group"><th></th><th colspan="2" class="span sep compact-only">ImaGenome</th><th colspan="4" class="span sep extra">ImaGenome</th><th colspan="2" class="span sep compact-only">VinDR-CXR</th><th colspan="4" class="span sep extra">VinDR-CXR</th><th colspan="2" class="span sep compact-only">PadChest-GR</th><th colspan="4" class="span sep extra">PadChest-GR</th></tr>
+<tr><th>Method</th><th class="sep">IoU</th><th>F1</th><th class="extra">Prec</th><th class="extra">Recall</th><th class="sep">IoU</th><th>F1</th><th class="extra">Prec</th><th class="extra">Recall</th><th class="sep">IoU</th><th>F1</th><th class="extra">Prec</th><th class="extra">Recall</th></tr>
+</thead>
+<tbody>
+<tr class="grp"><td colspan="7" class="compact-only">Attention-based</td><td colspan="13" class="extra">Attention-based</td></tr>
+<tr><td class="lbl">Attention Head</td><td class="sep">15.87</td><td>26.10</td><td class="extra">48.17</td><td class="extra">19.12</td><td class="sep">6.93</td><td>11.80</td><td class="extra">11.09</td><td class="extra">23.53</td><td class="sep">14.33</td><td>23.30</td><td class="extra">31.42</td><td class="extra">23.53</td></tr>
+<tr><td class="lbl">Attention Rollout</td><td class="sep">2.70</td><td>5.05</td><td class="extra">12.70</td><td class="extra">3.30</td><td class="sep">0.70</td><td>1.30</td><td class="extra">1.58</td><td class="extra">1.67</td><td class="sep">2.77</td><td>5.06</td><td class="extra">9.29</td><td class="extra">4.17</td></tr>
+<tr><td class="lbl">LRP</td><td class="sep">5.67</td><td>10.15</td><td class="extra">22.61</td><td class="extra">6.84</td><td class="sep">1.93</td><td>3.42</td><td class="extra">3.39</td><td class="extra">7.34</td><td class="sep">4.12</td><td>7.18</td><td class="extra">11.79</td><td class="extra">6.89</td></tr>
+<tr class="grp"><td colspan="7" class="compact-only">Gradient-based</td><td colspan="13" class="extra">Gradient-based</td></tr>
+<tr><td class="lbl">Gradient-weighted Attention</td><td class="sep second">39.24</td><td class="second">54.80</td><td class="extra">39.25</td><td class="extra best">99.90</td><td class="sep">7.73</td><td>13.26</td><td class="extra">7.73</td><td class="extra best">100.00</td><td class="sep second">22.73</td><td class="second">34.21</td><td class="extra">22.73</td><td class="extra best">100.00</td></tr>
+<tr><td class="lbl">GradCAM</td><td class="sep">34.47</td><td>49.10</td><td class="extra">44.81</td><td class="extra second">80.62</td><td class="sep">8.53</td><td>14.36</td><td class="extra">11.95</td><td class="extra">68.91</td><td class="sep">20.33</td><td>31.22</td><td class="extra">26.01</td><td class="extra">78.36</td></tr>
+<tr><td class="lbl">GradCAM++</td><td class="sep">30.54</td><td>44.07</td><td class="extra">44.40</td><td class="extra">65.42</td><td class="sep">7.40</td><td>12.61</td><td class="extra">9.36</td><td class="extra">60.64</td><td class="sep">18.28</td><td>28.09</td><td class="extra">25.93</td><td class="extra">62.96</td></tr>
+<tr><td class="lbl">Integrated Gradients</td><td class="sep">11.71</td><td>19.13</td><td class="extra">46.39</td><td class="extra">13.45</td><td class="sep">9.38</td><td>14.96</td><td class="extra">15.10</td><td class="extra">30.42</td><td class="sep">13.06</td><td>20.12</td><td class="extra">33.85</td><td class="extra">20.73</td></tr>
+<tr class="grp"><td colspan="7" class="compact-only">Prompting-based</td><td colspan="13" class="extra">Prompting-based</td></tr>
+<tr><td class="lbl">Prompting</td><td class="sep">8.24</td><td>12.17</td><td class="extra">15.24</td><td class="extra">17.73</td><td class="sep">2.45</td><td>4.04</td><td class="extra">3.24</td><td class="extra">12.22</td><td class="sep">7.55</td><td>11.47</td><td class="extra">13.03</td><td class="extra">18.02</td></tr>
+<tr><td class="lbl">Prompting + MedSAM</td><td class="sep">37.62</td><td>50.56</td><td class="extra">46.62</td><td class="extra">74.64</td><td class="sep">8.33</td><td>13.78</td><td class="extra">9.11</td><td class="extra second">86.08</td><td class="sep">21.76</td><td>32.29</td><td class="extra">23.22</td><td class="extra second">85.52</td></tr>
+<tr class="grp"><td colspan="7" class="compact-only">Perturbation-based</td><td colspan="13" class="extra">Perturbation-based</td></tr>
+<tr><td class="lbl">Occlusion</td><td class="sep">22.16</td><td>33.48</td><td class="extra second">60.25</td><td class="extra">36.72</td><td class="sep second">13.62</td><td class="second">21.28</td><td class="extra best">22.13</td><td class="extra">43.81</td><td class="sep">20.56</td><td>31.20</td><td class="extra best">44.03</td><td class="extra">40.72</td></tr>
+<tr><td class="lbl">RISE</td><td class="sep">19.17</td><td>30.84</td><td class="extra">50.35</td><td class="extra">24.18</td><td class="sep">10.14</td><td>16.69</td><td class="extra">14.21</td><td class="extra">36.69</td><td class="sep">16.80</td><td>26.89</td><td class="extra">33.76</td><td class="extra">29.45</td></tr>
+<tr class="ours"><td class="lbl">MedFocus (Ours)</td><td class="sep best">54.28</td><td class="best">67.52</td><td class="extra best">64.65</td><td class="extra">80.06</td><td class="sep best">14.86</td><td class="best">23.10</td><td class="extra second">16.00</td><td class="extra">79.86</td><td class="sep best">33.02</td><td class="best">45.69</td><td class="extra second">41.05</td><td class="extra">73.25</td></tr>
+</tbody></table></div>
+      </div>
+    <p class="table-note">Bold: best; underlined: second best.</p>
+    <ul class="findings">
+      <li>Gradient-weighted attention reaches near-perfect recall but low precision, because its maps cover most of the image.</li>
+      <li>GradCAM and Integrated Gradients, standard tools for visual classifiers, perform poorly in the LVLM setting.</li>
+      <li>MedFocus achieves the best IoU and F1 on all three datasets while keeping a strong balance between precision and recall.</li>
+    </ul>
+
+    <h3 id="threshold">Tuning baseline thresholds does not close the gap</h3>
+    <p>Tuning each baseline's saliency threshold on held-out PadChest-GR questions mostly trades precision for recall. MedFocus, which needs no threshold, stays well ahead.</p>
+    <p class="tcap"><b>Fixed vs. tuned saliency thresholds.</b> MedGround-Bench-Direct, averaged over all datasets and models.</p>
+<div class="table-wrap"><table class="res">
+<thead>
+<tr><th>Method</th><th>Threshold</th><th>IoU</th><th>F1</th><th>Prec</th><th>Recall</th></tr>
+</thead>
+<tbody>
+<tr><td class="lbl" rowspan="2">Attention Head</td><td>Fixed</td><td>14.01</td><td>22.98</td><td>35.32</td><td>22.56</td></tr>
+<tr><td>Tuned</td><td>25.29</td><td>37.55</td><td>30.77</td><td>70.18</td></tr>
+<tr><td class="lbl" rowspan="2">Integrated Gradients</td><td>Fixed</td><td>13.24</td><td>20.69</td><td>37.14</td><td>21.62</td></tr>
+<tr><td>Tuned</td><td>26.40</td><td>38.47</td><td>34.54</td><td>75.53</td></tr>
+<tr><td class="lbl" rowspan="2">Occlusion</td><td>Fixed</td><td>20.41</td><td>30.96</td><td>44.90</td><td>41.42</td></tr>
+<tr><td>Tuned</td><td>25.84</td><td>37.92</td><td>37.57</td><td>67.12</td></tr>
+<tr class="ours"><td class="lbl">MedFocus (Ours)</td><td>no threshold</td><td class="best">37.93</td><td class="best">49.82</td><td class="best">45.37</td><td class="best">77.68</td></tr>
+</tbody></table></div>
+
+    <h3 id="reasoning">Step-by-step reasoning</h3>
+    <p>When models reason step by step, many baselines degrade further (e.g., GradCAM++ drops from 30.54% to 23.70% IoU on ImaGenome). MedFocus stays strong (52.95% IoU on ImaGenome) because it never needs to probe model internals.</p>
+    <figure class="fig">
+      <img src="static/images/cot_results.png" alt="IoU and F1 of attribution methods on MedGround-Bench-Reason for three datasets">
+      <figcaption>Attribution on MedGround-Bench-Reason: IoU and F1 averaged over models.</figcaption>
+    </figure>
+  </section>
+
+  <section class="block" id="analysis">
+    <div class="label">Analysis</div>
+    <h2>What MedFocus reveals</h2>
+
+    <h3 id="tokens" style="margin-top: 8px;">Token-level attribution of reasoning</h3>
+    <p>MedFocus tracks which anatomy supports each part of a rationale. Early, generic tokens draw on lung-level context, while the clinically specific word &ldquo;enlarged&rdquo; concentrates on the cardiac silhouette, consistent with the final diagnosis of cardiomegaly.</p>
+    <figure class="fig">
+      <img src="static/images/case_reasoning.png" alt="Token-level concept attribution for a reasoning example about cardiomegaly">
+      <figcaption>Token-level concept attribution for a MedGround-Bench-Reason example about cardiomegaly.</figcaption>
+    </figure>
+
+    <h3 id="models">Grounding across models and sample groups</h3>
+    <p>We compare samples removed by correctness filtering (G1), correct but ungrounded samples removed by causal filtering (G2), and samples retained in MedGround-Bench (G3).</p>
+    <ul class="findings">
+      <li>IoU rises and the failure rate (no anatomical concept is used) falls from G1 to G3, so the filters keep predictions that are cleanly tied to clinical evidence.</li>
+      <li>Step-by-step reasoning lowers the failure rate for every model, often to near zero on G3.</li>
+      <li>The medically trained MedGemma models ground their predictions best, and larger models within a family ground better when reasoning.</li>
+    </ul>
+    <figure class="fig">
+      <img src="static/images/all_instance_comparison.png" alt="MedFocus IoU and failure rate across six models and three sample groups">
+      <figcaption>MedFocus attribution IoU (blue) and failure rate (orange) across models and sample groups, in direct-answer (top) and reasoning (bottom) modes.</figcaption>
+    </figure>
+
+    <h3 id="ablation">Ablations</h3>
+    <p>UOT localization with MedSAM refinement outperforms end-to-end segmenters (SAM3, MedSAM3, RadZero) and Grounding DINO, and bounding-box zero masking gives a stronger causal signal than pixel-level masks or RadEdit inpainting.</p>
+    <p class="tcap"><b>Ablations of MedFocus design choices.</b></p>
+<div class="table-wrap"><table class="res">
+<thead>
+<tr><th>Variant</th><th>IoU</th><th>F1</th><th>Prec</th><th>Recall</th></tr>
+</thead>
+<tbody>
+<tr class="grp"><td colspan="5">Segmentation paradigm</td></tr>
+<tr><td class="lbl">SAM3 (end-to-end)</td><td>30.89</td><td>42.61</td><td>38.75</td><td>79.11</td></tr>
+<tr><td class="lbl">MedSAM3 (end-to-end)</td><td>33.52</td><td>45.02</td><td>53.19</td><td>64.04</td></tr>
+<tr><td class="lbl">RadZero (end-to-end)</td><td>6.95</td><td>12.13</td><td>59.68</td><td>9.29</td></tr>
+<tr class="ours"><td class="lbl">UOT + MedSAM (detect+seg) (MedFocus)</td><td class="best">37.93</td><td class="best">49.82</td><td>45.37</td><td>77.68</td></tr>
+<tr class="grp"><td colspan="5">Localization strategy</td></tr>
+<tr><td class="lbl">Grounding DINO</td><td>27.72</td><td>39.63</td><td>27.74</td><td>99.77</td></tr>
+<tr><td class="lbl">Grounding DINO + MedSAM</td><td>29.96</td><td>41.82</td><td>30.09</td><td>99.25</td></tr>
+<tr><td class="lbl">UOT</td><td>36.24</td><td>48.16</td><td>45.72</td><td>71.09</td></tr>
+<tr class="ours"><td class="lbl">UOT + MedSAM (MedFocus)</td><td class="best">37.93</td><td class="best">49.82</td><td>45.37</td><td>77.68</td></tr>
+<tr class="grp"><td colspan="5">Counterfactual intervention</td></tr>
+<tr><td class="lbl">Segmentation mask + RadEdit</td><td>32.66</td><td>44.40</td><td>45.15</td><td>65.00</td></tr>
+<tr><td class="lbl">Segmentation mask + Zero masking</td><td>33.76</td><td>45.28</td><td>43.60</td><td>69.70</td></tr>
+<tr><td class="lbl">Bounding box + RadEdit</td><td>32.27</td><td>43.87</td><td>44.54</td><td>64.78</td></tr>
+<tr class="ours"><td class="lbl">Bounding box + Zero masking (MedFocus)</td><td class="best">37.93</td><td class="best">49.82</td><td>45.37</td><td>77.68</td></tr>
+</tbody></table></div>
+  </section>
+
+  <section class="block" id="bibtex">
+    <div class="label">Citation</div>
+    <h2>BibTeX</h2>
+    <div class="bib">
+      <button class="copy-btn" data-copy="bibtex-text"><i class="fa-regular fa-copy"></i> Copy</button>
+<pre id="bibtex-text">@inproceedings{xiong2026rethinking,
+  title     = {Rethinking Visual Attribution for Chest X-ray Reasoning in Large Vision Language Models},
+  author    = {Guangzhi Xiong and Qiao Jin and Sanchit Sinha and Zhiyong Lu and Aidong Zhang},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2026}
+}</pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Code and benchmark: <a href="https://github.com/gzxiong/medfocus">github.com/gzxiong/medfocus</a>
+</footer>
+
+</body>
+</html>
