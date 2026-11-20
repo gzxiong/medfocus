@@ -6,10 +6,10 @@ For each retained sample matching `--model` and `--split`, we:
   3. convert the heatmap (or returned boxes) into evaluation boxes;
   4. write one JSON record per sample to `--out`.
 
-Available methods (10 baselines + MedFocus):
+Available methods (11 baselines + MedFocus):
     attention_head, attention_rollout, lrp, grad_weighted_attention,
     gradcam, gradcampp, integrated_gradients, occlusion, rise,
-    prompting_medsam, medfocus
+    prompting, prompting_medsam, medfocus
 """
 
 from __future__ import annotations

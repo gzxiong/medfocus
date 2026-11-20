@@ -1,14 +1,17 @@
 # MedFocus / MedGround-Bench
 
+[![Homepage](https://img.shields.io/badge/Homepage-available-blue)](https://gzxiong.github.io/medfocus/)
+[![arXiv](https://img.shields.io/badge/arXiv-2605.20158-b31b1b.svg)](https://arxiv.org/abs/2605.20158)
+
 Code for **"Rethinking Visual Attribution for Chest X-ray Reasoning in Large
-Vision Language Models"**.
+Vision Language Models"** (NeurIPS 2026).
 
 The release ships two artifacts:
 
 - **MedGround-Bench** — a causally validated CXR-VQA attribution evaluation set
   (1,880 direct + 2,060 reasoning samples across 6 LVLMs and 3 source datasets).
-- **MedFocus** — a concept-based causal attribution method that beats 10 baselines
-  on the benchmark.
+- **MedFocus** — a concept-based causal attribution method that outperforms 11
+  existing attribution methods on the benchmark.
 
 ## Install
 
@@ -70,7 +73,7 @@ python scripts/precompute_ot.py --split direct --out-dir preprocess/direct/
 for m in qwen2_5_vl_3b qwen2_5_vl_7b gemma3_4b gemma3_12b medgemma_4b medgemma1_5_4b; do
   for method in attention_head attention_rollout lrp grad_weighted_attention \
                 gradcam gradcampp integrated_gradients occlusion rise \
-                prompting_medsam medfocus; do
+                prompting prompting_medsam medfocus; do
     python scripts/run_attribution.py --model $m --split direct \
         --method $method --out predictions/direct/$m/$method.json
   done
@@ -100,11 +103,11 @@ python scripts/build_medground_bench.py --predictions-root predictions \
 
 ## Citation
 If you use `MedFocus` or `MedGround-Bench`, please consider citing
-```
-@article{xiong2026rethinking,
-    title={Rethinking Visual Attribution for Chest X-ray Reasoning in Large Vision Language Models}, 
-    author={Guangzhi Xiong and Qiao Jin and Sanchit Sinha and Zhiyong Lu and Aidong Zhang},
-    journal={arXiv preprint arXiv:2605.20158},
-    year={2026}
+```bibtex
+@inproceedings{xiong2026rethinking,
+  title     = {Rethinking Visual Attribution for Chest X-ray Reasoning in Large Vision Language Models},
+  author    = {Guangzhi Xiong and Qiao Jin and Sanchit Sinha and Zhiyong Lu and Aidong Zhang},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2026}
 }
 ```
